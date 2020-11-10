@@ -26,12 +26,16 @@ public class PDA
     {
         readTransitionList();
         readInputList();
-        
+
 /*        readInput(instructionsFile, transitionsList);
         readInput(inputFile, inputList);
         getRules(transitionsList);
         getInput(inputList);
         addToStack(transitionsList, inputList, stack);*/
+    }
+
+    void checkString(String inString){
+
     }
 
     void readInputList(){
