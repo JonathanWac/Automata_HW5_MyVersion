@@ -2,6 +2,11 @@ public class Main {
 
     public static void main(String[] args) {
 	// write your code here
+        System.out.println("\nInput 2 short");
+        PDA pda4 = new PDA("input2.txt", "testInput2_short.txt");
+        pda4.run();
+
+
         System.out.println("Input 1");
         PDA pda1 = new PDA("input1.txt", "testInput1.txt");
         pda1.run();
@@ -11,5 +16,7 @@ public class Main {
         System.out.println("\nInput 3");
         PDA pda3 = new PDA("input3.txt", "testInput3.txt");
         pda3.run();
+
+
     }
 }

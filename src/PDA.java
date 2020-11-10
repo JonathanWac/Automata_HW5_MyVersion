@@ -102,6 +102,7 @@ public class PDA
                         else {
                             currentStack.push(currentState.pushInput);
                         }
+
                         LinkedList<PDA_State> foundStates = findStates(currentState.nextStateName);
                         boolean bool = false;
                         for (PDA_State states : foundStates){
@@ -119,6 +120,8 @@ public class PDA
                             else {
                                 currentStack.push(currentState.pushInput);
                             }
+                            if (currentStack.isEmpty() && currentState.nextStateName.equals(finalState))
+                                return true;
                             LinkedList<PDA_State> foundStates = findStates(currentState.nextStateName);
                             boolean bool = false;
                             for (PDA_State states : foundStates){
