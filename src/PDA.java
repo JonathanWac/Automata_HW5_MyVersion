@@ -1,3 +1,42 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  Jonathan Wachholz
+//      HW 5
+//      PDA.java
+//      jhw190002
+//      Nov. 10th 2020
+//      CS 4384.502 Automata Theory
+//      Prof. Stallbohm
+//
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// PDA Description input format:
+//      The input will consist of a number of lines.
+//      The first line consist of the description of the PDA,
+//  The first number n the number of states, second number t the number of transitions, third
+//  number s is the start state and the last numbers separated by a comma are the final states.
+//    First line ex:  num_states num_transitions start_state final_states
+//
+//  There will be t lines following the first describing each transition. The first symbol q is the
+//start state, second symbol q’ is the end state, third symbol sigma is the alphabet letter for
+//the transition, fourth symbol pop_symbol is the stack symbol being popped onto the stack, and fifth
+//symbol push_symbol is the symbol being pushed onto the stack.
+//
+//      next T lines ex: current_state next_state input_alphabet pop_symbol push_symbol
+//
+//  Assumptions made:
+//      1. The test Strings Input file does not contain any inputs with the lowercase letter e
+//      2. The PDA Descriptions file will always be structured as described above
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  The test strings input
+//      The input for the test strings file will consist of a number of lines. The first line is a number,
+//  n, which is the number of test inputs to follow. The next n lines contain a test string to feed
+//  as input into your PDA
+//
+//      ex. (a test file with 2 inputs)
+//          2
+//          aabbbbbb
+//          ba
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 import java.io.*;
 import java.util.*;
 
@@ -8,12 +47,10 @@ public class PDA
 
     private int numStates, numTransitions, numInputs;
     private String startState, finalState;
-    private char inputAlphabet, popSymbol, pushSymbol;
 
     private LinkedList<PDA_State> pdaStates = new LinkedList<>();
     private LinkedList<LinkedList<String> > transitionsList = new LinkedList<>();
     private LinkedList<String> inputList = new LinkedList<>();
-    //private Stack<String> stack = new Stack<>();
 
     public PDA(String pdaDescriptionFile, String inputFile) {
         this.pdaDescriptionFile = pdaDescriptionFile;
@@ -33,6 +70,7 @@ public class PDA
 
 
     boolean checkTransition(PDA_State currentState, String remainingString, Stack<Character> currentStack){
+
         if (currentState.currentStateName.equals(finalState) && remainingString.isEmpty())
             return true;
 
