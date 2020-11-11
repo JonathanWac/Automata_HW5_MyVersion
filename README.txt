@@ -5,11 +5,12 @@ input1.txt
 
 testInput1.txt
 - The test file for input1.txt. The correct output for this file is:
-	true
-	true
-	false
-	false
-	true
+	true    aabb
+	true	aaaaaabbcccc
+	false	aab
+	false	bac
+	true	aaaabbcc
+
 	
 The pda description for the first test is input1.txt and the test strings are in testInput1.txt 
 

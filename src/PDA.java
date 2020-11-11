@@ -4,7 +4,7 @@ import java.util.*;
 public class PDA
 {
 
-    private String PDAInfoFile, inputFile;
+    private String pdaDescriptionFile, inputFile;
 
     private int numStates, numTransitions, numInputs;
     private String startState, finalState;
@@ -15,8 +15,8 @@ public class PDA
     private LinkedList<String> inputList = new LinkedList<>();
     //private Stack<String> stack = new Stack<>();
 
-    public PDA(String PDAInfoFile, String inputFile) {
-        this.PDAInfoFile = PDAInfoFile;
+    public PDA(String pdaDescriptionFile, String inputFile) {
+        this.pdaDescriptionFile = pdaDescriptionFile;
         this.inputFile = inputFile;
     }
 
@@ -33,6 +33,13 @@ public class PDA
 
 
     boolean checkTransition(PDA_State currentState, String remainingString, Stack<Character> currentStack){
+        if (currentState.currentStateName.equals(finalState) && remainingString.isEmpty())
+            return true;
+
+        //Will return false if the PDA is about to infinitely loop. If any of the == 'e' parameters are false, then
+        //      the PDA will continue on and will return false if
+        if (currentState.currentStateName.equals(currentState.nextStateName) && currentState.popInput == 'e' && currentState.pushInput == 'e' && currentState.transitionInput == 'e')
+            return false;
 
         // remainingString is not empty, so if it has the same transInput
         //      we need to recursively call -the first character of remaining string
@@ -48,6 +55,7 @@ public class PDA
                         else {
                             currentStack.push(currentState.pushInput);
                         }
+
                         LinkedList<PDA_State> foundStates = findStates(currentState.nextStateName);
                         boolean bool = false;
                         for (PDA_State states : foundStates){
@@ -65,6 +73,7 @@ public class PDA
                             else {
                                 currentStack.push(currentState.pushInput);
                             }
+
                             LinkedList<PDA_State> foundStates = findStates(currentState.nextStateName);
                             boolean bool = false;
                             for (PDA_State states : foundStates){
@@ -83,6 +92,7 @@ public class PDA
                         else {
                             currentStack.push(currentState.pushInput);
                         }
+
                         LinkedList<PDA_State> foundStates = findStates(currentState.nextStateName);
                         boolean bool = false;
                         for (PDA_State states : foundStates){
@@ -120,8 +130,7 @@ public class PDA
                             else {
                                 currentStack.push(currentState.pushInput);
                             }
-                            if (currentStack.isEmpty() && currentState.nextStateName.equals(finalState))
-                                return true;
+
                             LinkedList<PDA_State> foundStates = findStates(currentState.nextStateName);
                             boolean bool = false;
                             for (PDA_State states : foundStates){
@@ -135,11 +144,12 @@ public class PDA
                 else {
                     if (currentState.popInput == 'e'){
                         if (currentState.pushInput == 'e'){
-
+                            ;
                         }
                         else {
                             currentStack.push(currentState.pushInput);
                         }
+
                         LinkedList<PDA_State> foundStates = findStates(currentState.nextStateName);
                         boolean bool = false;
                         for (PDA_State states : foundStates){
@@ -154,18 +164,19 @@ public class PDA
         //
         else {
             //Empty input, and at final state, and stack is empty
-            if (currentState.nextStateName.equals(finalState) && currentStack.isEmpty())
-                return true;
+            /*if (currentState.nextStateName.equals(finalState) && currentStack.isEmpty())
+                return true;*/
 
             if (currentState.transitionInput == 'e'){
                 if (currentStack.size() > 0){
                     if (currentState.popInput == 'e'){
                         if (currentState.pushInput == 'e')
                             ;
-                            //The pushInput is non e, so we push it onto stack
+                        //The pushInput is non e, so we push it onto stack
                         else {
                             currentStack.push(currentState.pushInput);
                         }
+
                         LinkedList<PDA_State> foundStates = findStates(currentState.nextStateName);
                         boolean bool = false;
                         for (PDA_State states : foundStates){
@@ -178,12 +189,11 @@ public class PDA
                         if (popChar == currentState.popInput){
                             if (currentState.pushInput == 'e')
                                 ;
-                                //The pushInput is non e, so we push it onto stack
+                            //The pushInput is non e, so we push it onto stack
                             else {
                                 currentStack.push(currentState.pushInput);
                             }
-                            if (currentStack.isEmpty() && currentState.nextStateName.equals(finalState))
-                                return true;
+
                             LinkedList<PDA_State> foundStates = findStates(currentState.nextStateName);
                             boolean bool = false;
                             for (PDA_State states : foundStates){
@@ -199,10 +209,11 @@ public class PDA
                     if (currentState.popInput == 'e'){
                         if (currentState.pushInput == 'e')
                             ;
-                            //The pushInput is non e, so we push it onto stack
+                        //The pushInput is non e, so we push it onto stack
                         else {
                             currentStack.push(currentState.pushInput);
                         }
+
                         LinkedList<PDA_State> foundStates = findStates(currentState.nextStateName);
                         boolean bool = false;
                         for (PDA_State states : foundStates){
@@ -284,14 +295,16 @@ public class PDA
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            System.err.printf("There was a FileNotFoundException trying to read in the test Strings input file '%s'\n", inputFile);
         } catch (IOException e) {
             e.printStackTrace();
+            System.err.printf("There was an error trying to read in the test Strings input file '%s'\n", inputFile);
         }
     }
 
     void readTransitionList(){
         try {
-            FileReader fileReader = new FileReader(PDAInfoFile);
+            FileReader fileReader = new FileReader(pdaDescriptionFile);
             Scanner scanner = new Scanner(fileReader);
             int lineNum = 0;
             Vector<String> tokensVector = removeEmptyStrings(scanner.nextLine().split("\\s+"));
@@ -333,15 +346,19 @@ public class PDA
                 transitionListPos++;
             }
 
-            //So, according to the logic of my code, this should be safe. If a state reaches the final transition state and its
+            //So, according to the logic of my code, this should be safe. If a state reaches the final transition state and the
+            //  input string is empty, then it will pass. If the input string is not empty and it is at this state, it will return false
+            //      after seeing that the currentState == finalState, and all other inputs are 'e'
             if (findStates(finalState).isEmpty())
-                ;//pdaStates.add(new PDA_State(finalState, null, 'e', 'e', 'e'));
+                pdaStates.add(new PDA_State(finalState, finalState, 'e', 'e', 'e'));
 
             fileReader.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            System.err.printf("There was a FileNotFoundException trying to read in the PDA Description file '%s'\n", pdaDescriptionFile);
         } catch (IOException e) {
             e.printStackTrace();
+            System.err.printf("There was an error trying to read in the PDA Description file '%s'\n", pdaDescriptionFile);
         }
     }
 
